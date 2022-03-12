@@ -80,8 +80,8 @@ app.get('/', (req, res) => {
 const client = new Client({
   restartOnAuthFail: true,
   puppeteer: {
-       // executablePath: '/usr/bin/chromium-browser',
-      executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+       executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     headless: true,
     args: [
       '--no-sandbox',
