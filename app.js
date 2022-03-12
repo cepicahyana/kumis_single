@@ -266,8 +266,8 @@ client.on('message',async msg => {
 
 
 // Socket IO
-io.on('connection', function(socket) {
-  socket.emit('message', 'Connecting...');
+// io.on('connection', function(socket) {
+//   socket.emit('message', 'Connecting...');
 
   // client.on('qr', (qr) => {
   //   console.log('QR RECEIVED', qr);
@@ -387,7 +387,7 @@ io.on('connection', function(socket) {
 }
 
 
-});
+// });
 
 
 const checkRegisteredNumber = async function(number) {
