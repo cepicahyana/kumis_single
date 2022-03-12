@@ -64,7 +64,7 @@ const createSession = async function(sender_number) { //new
        const hasil = await axios.get(fileUrl,{params:{apikey:2345678,sender_number:sender_number}}).then(response => {  
           sessionCfg = response.data["data"]; 
           sessionCfg = JSON.parse(sessionCfg); 
-          console.log(sessionCfg);
+          // console.log(sessionCfg);
        }).catch(err=>{
          console.log(err);
        }); 
@@ -865,7 +865,7 @@ init();
 
 
 
-server.listen(port, function() {
+app.listen(port, function() {
   console.log('App running on *: ' + port);
 });
 
