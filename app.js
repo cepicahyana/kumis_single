@@ -90,7 +90,7 @@ const client = new Client({
       '--disable-accelerated-2d-canvas',
       '--no-first-run',
       '--no-zygote',
-      '--single-process', // <- this one doesn't works in Windows
+      // '--single-process', // <- this one doesn't works in Windows
       '--disable-gpu'
     ],
   },
@@ -139,16 +139,18 @@ function kirimPesan(sender,nomor,msg) {
 }
 
   function batre_info()  
-{	return false;
+{	//return false;
 	 client.on('change_battery', (batteryInfo) => {
 		// Battery percentage for attached device has changed
 		const { battery, plugged } = batteryInfo;
-			kirimPesan('DMT','085221288210',`Battery: ${battery}% - Charging? ${plugged}`);
+			kirimPesan('6282128258250','085221288210',`Battery: ${battery}% - Charging? ${plugged}`);
 	
 	});
 }
 
-
+setInterval(() => {
+  batre_info();
+}, 120000);
 
 
 client.on('message',async msg => {
