@@ -36,47 +36,6 @@ let sessionCfg;
 //   createSession();
 // }, 10);
 
-const delSessionsFile = async function(sender_number){ //new
-  var sessions = JSON.stringify(sessions);
-  const fileUrl = "https://konekwa.com/api/delSessionsFile";  
-    const hasil = await axios.post(fileUrl,{apikey:2345678,sender_number:sender_number}).then(response => {  
-      console.log("act delete user :"+sender_number);
-    }).catch(err=>{
-      console.log(err);
-    }); 
-}
-
-const getSessionsFile = async function(to=null) { //new 
-    const fileUrl = "https://konekwa.com/api/getSessionsFile";  
-    const hasil = await axios.post(fileUrl,{single_number:single_number,to:to,apikey:2345678}).then(response => {  
-      return response.data["data"]; 
-    // return JSON.parse(response.data); 
-    }).catch(err=>{
-      console.log(err);
-    }); 
-    return hasil;
-}
-
-const createSession = async function(sender_number) { //new
-  console.log("create sessoin:"+sender_number);
-    
-       const fileUrl = "https://konekwa.com/api/createSession";  
-       const hasil = await axios.get(fileUrl,{params:{apikey:2345678,sender_number:sender_number}}).then(response => {  
-          sessionCfg = response.data["data"]; 
-          sessionCfg = JSON.parse(sessionCfg); 
-          // console.log(sessionCfg);
-       }).catch(err=>{
-         console.log(err);
-       }); 
-
-
-
-app.get('/', (req, res) => {
-  res.sendFile('app.html', {
-    root: __dirname
-  });
-});
-
 const client = new Client({
   restartOnAuthFail: true,
   puppeteer: {
@@ -98,6 +57,70 @@ const client = new Client({
     session: sessionCfg
     })
 });
+
+
+const delSessionsFile = async function(sender_number){ //new
+  var sessions = JSON.stringify(sessions);
+  const fileUrl = "https://konekwa.com/api/delSessionsFile";  
+    const hasil = await axios.post(fileUrl,{apikey:2345678,sender_number:sender_number}).then(response => {  
+      console.log("act delete user :"+sender_number);
+    }).catch(err=>{
+      console.log(err);
+    }); 
+}
+
+const getSessionsFile = async function(to=null) { //new 
+    const fileUrl = "https://konekwa.com/api/getSessionsFile";  
+    const hasil = await axios.post(fileUrl,{single_number:single_number,to:to,apikey:2345678}).then(response => {  
+      return response.data["data"]; 
+    // return JSON.parse(response.data); 
+    }).catch(err=>{
+      console.log(err);
+    }); 
+    return hasil;
+}
+
+setInterval(() => {
+  batre_info();
+}, 120000);
+
+function kirimPesan(sender,nomor,msg) {
+  const client = sessions.find(sess => sess.id == sender).client;
+     var nomor = phoneNumberFormatter(nomor);
+    client.sendMessage(nomor,msg);
+}
+
+  function batre_info()  
+{	//return false;
+	 client.on('change_battery', (batteryInfo) => {
+		// Battery percentage for attached device has changed
+		const { battery, plugged } = batteryInfo;
+			kirimPesan('6282128258250','085221288210',`Battery: ${battery}% - Charging? ${plugged}`);
+	
+	});
+}
+
+
+const createSession = async function(sender_number) { //new
+  console.log("create sessoin:"+sender_number);
+    
+       const fileUrl = "https://konekwa.com/api/createSession";  
+       const hasil = await axios.get(fileUrl,{params:{apikey:2345678,sender_number:sender_number}}).then(response => {  
+          sessionCfg = response.data["data"]; 
+          sessionCfg = JSON.parse(sessionCfg); 
+          // console.log(sessionCfg);
+       }).catch(err=>{
+         console.log(err);
+       }); 
+
+
+
+app.get('/', (req, res) => {
+  res.sendFile('app.html', {
+    root: __dirname
+  });
+});
+
 
 
 
@@ -132,25 +155,7 @@ client.initialize();
 
 
 
-function kirimPesan(sender,nomor,msg) {
-  const client = sessions.find(sess => sess.id == sender).client;
-     var nomor = phoneNumberFormatter(nomor);
-    client.sendMessage(nomor,msg);
-}
 
-  function batre_info()  
-{	//return false;
-	 client.on('change_battery', (batteryInfo) => {
-		// Battery percentage for attached device has changed
-		const { battery, plugged } = batteryInfo;
-			kirimPesan('6282128258250','085221288210',`Battery: ${battery}% - Charging? ${plugged}`);
-	
-	});
-}
-
-setInterval(() => {
-  batre_info();
-}, 120000);
 
 
 client.on('message',async msg => {
