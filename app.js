@@ -58,16 +58,36 @@ const client = new Client({
     })
 });
 
-
-const delSessionsFile = async function(sender_number){ //new
-  var sessions = JSON.stringify(sessions);
-  const fileUrl = "https://konekwa.com/api/delSessionsFile";  
-    const hasil = await axios.post(fileUrl,{apikey:2345678,sender_number:sender_number}).then(response => {  
-      console.log("act delete user :"+sender_number);
-    }).catch(err=>{
-      console.log(err);
-    }); 
+// const delSessionsFile = async function(sender_number){ //new
+//   var session = JSON.stringify(session);
+//   const fileUrl = "https://konekwa.com/api/delSessionsFile";  
+//     const hasil = await axios.post(fileUrl,{apikey:2345678,sender_number:sender_number}).then(response => {  
+//       console.log("act delete user :"+sender_number);
+//     }).catch(err=>{
+//       console.log(err);
+//     }); 
+// }
+const jalankanAwal = async function(){  
+  var linkapi = "https://konekwa.com/api/updateStatusOffDevice";   
+  const hasil = await axios.get(linkapi,{ 
+      params :{		apikey : "2345678",sender_number:single_number }
+  }).then(response => {  
+   console.log(response['data']);
+  }).catch(err=>{
+    console.log(response);
+  return false;
+  });
 }
+
+
+setTimeout(function(){
+	jalankanAwal();
+},100);
+ 
+	setInterval(function(){ 
+    intervalSendtext();
+    console.log("get Message for send");
+  }, 5000);
 
 const getSessionsFile = async function(to=null) { //new 
     const fileUrl = "https://konekwa.com/api/getSessionsFile";  
@@ -114,6 +134,15 @@ const createSession = async function(sender_number) { //new
        }); 
 
 
+       sessions.push({
+        id: single_number,
+        client: client
+      });
+      
+      
+      
+      } //end create session ############### yang butuh client
+      
 
 app.get('/', (req, res) => {
   res.sendFile('app.html', {
@@ -286,22 +315,22 @@ client.on('message',async msg => {
 
   client.on('qr', (qr) => { 
     qrcode.toDataURL(qr, (err, url) => {
-		setQR(sender_number,url);
-	  setDeviceStatus(sender_number,2);
-    console.log("ayo scan:"+sender_number);
+		setQR(single_number,url);
+	  setDeviceStatus(single_number,2);
+    console.log("ayo scan:"+single_number);
     });
   });
 
-  const setDeviceStatus = async function(sender_number,sts,session=null){  
+  const setDeviceStatus = async function(single_number,sts,session=null){  
 		var linkapi = "https://konekwa.com/api/setDeviceStatus";   
 		const hasil = await axios.get(linkapi,{ 
 				params :{		apikey		   : "2345678",
-                sender_number	   : sender_number,
+                sender_number	   : single_number,
 								sts			         : sts,
                 session          : session
 						}
 		}).then(response => {  
-      console.log("update device "+sender_number+" sts : "+sts);
+      console.log("update device "+single_number+" sts : "+sts);
 		return response.data; 
 	  }).catch(err=>{
 		return false;
@@ -330,8 +359,8 @@ client.on('message',async msg => {
   // });
 
   client.on('ready', () => { 
-    console.log("whatsapp is ready :"+sender_number);
-    setDeviceStatus(sender_number,1);
+    console.log("whatsapp is ready :"+single_number);
+    setDeviceStatus(single_number,1);
   });
   
 
@@ -348,14 +377,14 @@ client.on('message',async msg => {
   // });
 
   client.on('authenticated', (session) => {
-    console.log("whatsapp is authenticated :"+sender_number);
+    console.log("whatsapp is authenticated :"+single_number);
     sessionCfg = session;
-    setDeviceStatus(sender_number,3,JSON.stringify(sessionCfg));  
+    setDeviceStatus(single_number,3,JSON.stringify(sessionCfg));  
   });
 
   client.on('auth_failure', function(session) {
-    console.log(sender_number +':Auth failure, restarting...' );
-	setDeviceStatus(sender_number,4);
+    console.log(single_number +':Auth failure, restarting...' );
+	setDeviceStatus(single_number,4);
   });
 
   // client.on('auth_failure', function(session) {
@@ -373,13 +402,13 @@ client.on('message',async msg => {
   // });
 
   client.on('disconnected', (reason) => {
-    console.log( sender_number +':   disconnected!' );
-	setDeviceStatus(sender_number,0);
-        console.log('Session '+sender_number+' file deleted!');
+    console.log( single_number +':   disconnected!' );
+	setDeviceStatus(single_number,0);
+        console.log('Session '+single_number+' file deleted!');
     client.destroy();
     client.initialize();
-    delSessionsFile(sender_number);
-    console.log('remove-session :'+ sender_number);
+    // delSessionsFile(sender_number);
+    console.log('remove-session :'+ single_number);
   });
 
 
@@ -776,6 +805,9 @@ console.log(hasil);
   }
 }
 
+
+
+
 const updateGroup = async function(link,datagroup){ //new
   var sessions = JSON.stringify(sessions);
   const fileUrl = link;
@@ -803,43 +835,6 @@ const updateMessageStatus = async function(from,to,ack){
 }
 
 
-
-
-
-
-
-
-
-
-
-setTimeout(function(){
-	jalankanAwal();
-},100);
- 
-	setInterval(function(){ 
-    intervalSendtext();
-    console.log("get Message for send");
-  }, 5000);
-
-const jalankanAwal = async function(){  
-  var linkapi = "https://konekwa.com/api/updateStatusOffDevice";   
-  const hasil = await axios.get(linkapi,{ 
-      params :{		apikey : "2345678",sender_number:sender_number }
-  }).then(response => {  
-   console.log(response['data']);
-  }).catch(err=>{
-    console.log(response);
-  return false;
-  });
-}
-
-sessions.push({
-  id: sender_number,
-  client: client
-});
-
-
-} //end create session ############### yang butuh client
 
 
 
